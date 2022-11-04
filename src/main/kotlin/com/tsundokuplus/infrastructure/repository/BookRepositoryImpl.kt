@@ -1,0 +1,103 @@
+package com.tsundokuplus.infrastructure.repository
+
+import com.tsundokuplus.domain.model.Book
+import com.tsundokuplus.domain.model.Note
+import com.tsundokuplus.domain.repository.BookRepository
+import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.javatime.datetime
+import org.springframework.stereotype.Repository
+import java.time.LocalDateTime
+
+@Repository
+class BookRepositoryImpl : BookRepository {
+    override fun findAll(): List<Book> {
+        val results = BookTable.select { BookTable.user_id eq 1 }
+
+        return results.map {
+            Book(
+                it[BookTable.id],
+                it[BookTable.title],
+                it[BookTable.author],
+                it[BookTable.publisher],
+                it[BookTable.thumbnail],
+                it[BookTable.small_thumbnail],
+                Note.ofNull()
+            )
+        }
+    }
+
+    override fun findOne(bookId: Int): Book? {
+        val result = BookTable
+            .join(NoteTable, JoinType.LEFT, additionalConstraint = { BookTable.id eq NoteTable.book_id })
+            .select { BookTable.id eq bookId }
+            .single()
+
+        return result.let {
+            Book(
+                it[BookTable.id],
+                it[BookTable.title],
+                it[BookTable.author],
+                it[BookTable.publisher],
+                it[BookTable.thumbnail],
+                it[BookTable.small_thumbnail],
+                Note(
+                    it[NoteTable.contents],
+                    it[NoteTable.updated_at]
+                )
+            )
+        }
+    }
+
+    override fun create(book: Book) {
+        val id = BookTable.insert {
+            it[title] = book.title
+            it[user_id] = 1
+            it[author] = book.author!!
+            it[publisher] = book.publisher!!
+            it[thumbnail] = book.thumbnail!!
+            it[small_thumbnail] = book.smallThumbnail!!
+            it[created_at] = LocalDateTime.now()
+            it[updated_at] = LocalDateTime.now()
+        } get BookTable.id
+
+        NoteTable.insert {
+            it[book_id] = id
+            it[created_at] = LocalDateTime.now()
+            it[updated_at] = LocalDateTime.now()
+        }
+    }
+
+    override fun update(book: Book) {
+        val bookId: Int = book.id!!
+        NoteTable.update ({ NoteTable.book_id eq bookId }) {
+            it[contents] = book.note.contents!!
+            it[updated_at] = book.note.UpdatedAt!!
+        }
+    }
+
+    override fun delete(bookId: Int) {
+        NoteTable.deleteWhere { book_id eq bookId }
+        BookTable.deleteWhere { id eq bookId }
+    }
+
+    object BookTable : Table("book") {
+        val id = integer("id").autoIncrement()
+        val user_id = integer("user_id")
+        val title = varchar("title", 255)
+        val author = varchar("author", 255)
+        val publisher = varchar("publisher", 255)
+        val thumbnail = varchar("thumbnail", 255)
+        val small_thumbnail = varchar("small_thumbnail", 255)
+        val created_at = datetime("created_at")
+        val updated_at = datetime("updated_at")
+    }
+
+    object NoteTable : Table("note") {
+        val id = integer("id").autoIncrement()
+        val book_id = integer("book_id")
+        val contents = varchar("contents", 2048)
+        val created_at = datetime("created_at")
+        val updated_at = datetime("updated_at")
+    }
+}
