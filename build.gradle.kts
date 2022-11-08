@@ -30,6 +30,7 @@ dependencies {
     implementation("org.flywaydb:flyway-core:8.5.13")
     implementation("org.flywaydb:flyway-mysql:8.5.13")
     testImplementation("org.springframework.boot:spring-boot-starter-test:2.7.2")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
 }
 
 tasks.withType<KotlinCompile> {

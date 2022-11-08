@@ -4,7 +4,7 @@ import java.time.LocalDateTime
 
 data class Note(
     val contents: String?,
-    val UpdatedAt: LocalDateTime?
+    val updatedAt: LocalDateTime? = null
 ) {
     companion object {
         fun ofNull(): Note {

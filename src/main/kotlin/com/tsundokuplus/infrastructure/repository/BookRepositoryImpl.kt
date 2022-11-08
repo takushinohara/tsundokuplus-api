@@ -72,7 +72,7 @@ class BookRepositoryImpl : BookRepository {
         val bookId: Int = book.id!!
         NoteTable.update ({ NoteTable.book_id eq bookId }) {
             it[contents] = book.note.contents!!
-            it[updated_at] = book.note.UpdatedAt!!
+            it[updated_at] = LocalDateTime.now()
         }
     }
 
