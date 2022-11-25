@@ -1,1 +1,2 @@
-INSERT INTO `user` (`id`, `name`, `created_at`, `updated_at`) VALUES (1, 'Test User', now(), now());
+INSERT INTO `user` (`id`, `email`, `password`, `name`, `role_type`, `created_at`, `updated_at`) VALUES (1, 'user1@example.com', '$2a$10$dtB.bySf.ZcbOPOp3Q7ZgedqofClN56rQ6JboxBuiW02twNMcAoZS', 'Test User1', 'USER', now(), now());
+INSERT INTO `user` (`id`, `email`, `password`, `name`, `role_type`, `created_at`, `updated_at`) VALUES (2, 'user2@example.com', '$2a$10$dtB.bySf.ZcbOPOp3Q7ZgedqofClN56rQ6JboxBuiW02twNMcAoZS', 'Test User2', 'USER', now(), now());
