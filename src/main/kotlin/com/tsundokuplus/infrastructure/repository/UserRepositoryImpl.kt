@@ -1,9 +1,9 @@
 package com.tsundokuplus.infrastructure.repository
 
-import com.tsundokuplus.domain.model.Email
-import com.tsundokuplus.domain.model.Password
-import com.tsundokuplus.domain.model.RoleType
-import com.tsundokuplus.domain.model.User
+import com.tsundokuplus.domain.model.user.Email
+import com.tsundokuplus.domain.model.user.Password
+import com.tsundokuplus.domain.model.user.RoleType
+import com.tsundokuplus.domain.model.user.User
 import com.tsundokuplus.domain.repository.UserRepository
 import org.jetbrains.exposed.sql.Table
 import org.jetbrains.exposed.sql.insert

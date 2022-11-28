@@ -2,8 +2,8 @@ package com.tsundokuplus.application.controller
 
 import com.tsundokuplus.application.service.BookService
 import com.tsundokuplus.application.service.security.LoginUser
-import com.tsundokuplus.domain.model.Book
-import com.tsundokuplus.domain.model.Note
+import com.tsundokuplus.domain.model.book.Book
+import com.tsundokuplus.domain.model.book.Note
 import org.springframework.http.HttpStatus
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.CrossOrigin

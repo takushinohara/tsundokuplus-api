@@ -1,7 +1,7 @@
 package com.tsundokuplus.infrastructure.repository
 
-import com.tsundokuplus.domain.model.Book
-import com.tsundokuplus.domain.model.Note
+import com.tsundokuplus.domain.model.book.Book
+import com.tsundokuplus.domain.model.book.Note
 import com.tsundokuplus.domain.repository.BookRepository
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq

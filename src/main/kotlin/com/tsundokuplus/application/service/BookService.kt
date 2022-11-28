@@ -1,7 +1,7 @@
 package com.tsundokuplus.application.service
 
-import com.tsundokuplus.domain.model.Book
-import com.tsundokuplus.domain.model.Note
+import com.tsundokuplus.domain.model.book.Book
+import com.tsundokuplus.domain.model.book.Note
 import com.tsundokuplus.domain.repository.BookRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

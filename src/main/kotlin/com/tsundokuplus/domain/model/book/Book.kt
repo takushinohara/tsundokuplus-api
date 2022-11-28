@@ -1,4 +1,4 @@
-package com.tsundokuplus.domain.model
+package com.tsundokuplus.domain.model.book
 
 data class Book(
     val id: Int? = null,

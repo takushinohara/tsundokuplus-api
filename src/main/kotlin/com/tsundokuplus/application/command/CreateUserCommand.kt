@@ -1,9 +1,9 @@
 package com.tsundokuplus.application.command
 
 import com.tsundokuplus.application.service.UserService
-import com.tsundokuplus.domain.model.Email
-import com.tsundokuplus.domain.model.Password
-import com.tsundokuplus.domain.model.User
+import com.tsundokuplus.domain.model.user.Email
+import com.tsundokuplus.domain.model.user.Password
+import com.tsundokuplus.domain.model.user.User
 import org.springframework.shell.standard.ShellComponent
 import org.springframework.shell.standard.ShellMethod
 

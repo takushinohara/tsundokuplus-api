@@ -1,6 +1,11 @@
 package com.tsundokuplus.application.service
 
-import com.tsundokuplus.domain.model.*
+import com.tsundokuplus.domain.model.book.Book
+import com.tsundokuplus.domain.model.book.Note
+import com.tsundokuplus.domain.model.user.Email
+import com.tsundokuplus.domain.model.user.Password
+import com.tsundokuplus.domain.model.user.RoleType
+import com.tsundokuplus.domain.model.user.User
 import com.tsundokuplus.domain.repository.BookRepository
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeEach
@@ -85,7 +90,8 @@ class BookServiceTest {
         bookService.updateBook(bookId, Note(updatedContents), user.id!!)
 
         verify(bookRepository).findOne(bookId, user.id!!)
-        verify(bookRepository).update(Book(
+        verify(bookRepository).update(
+            Book(
             bookId,
             "Test book",
             "Test author",
@@ -93,7 +99,8 @@ class BookServiceTest {
             "http://example.com",
             "http://example.com",
             Note(updatedContents)
-        ))
+        )
+        )
     }
 
     @Test

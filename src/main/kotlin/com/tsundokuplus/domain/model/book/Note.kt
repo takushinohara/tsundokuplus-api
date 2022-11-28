@@ -1,4 +1,4 @@
-package com.tsundokuplus.domain.model
+package com.tsundokuplus.domain.model.book
 
 import java.time.LocalDateTime
 

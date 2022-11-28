@@ -1,4 +1,4 @@
-package com.tsundokuplus.domain.model
+package com.tsundokuplus.domain.model.user
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 
@@ -14,7 +14,7 @@ value class Password(val value: String) {
         }
 
         fun factory(rawPassword: String): Password {
-            return Password(this.hash(rawPassword))
+            return Password(hash(rawPassword))
         }
     }
 }

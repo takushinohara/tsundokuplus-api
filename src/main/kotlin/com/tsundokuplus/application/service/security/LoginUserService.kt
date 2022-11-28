@@ -1,8 +1,8 @@
 package com.tsundokuplus.application.service.security
 
 import com.tsundokuplus.application.service.UserService
-import com.tsundokuplus.domain.model.RoleType
-import com.tsundokuplus.domain.model.User
+import com.tsundokuplus.domain.model.user.RoleType
+import com.tsundokuplus.domain.model.user.User
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.security.core.userdetails.UserDetails

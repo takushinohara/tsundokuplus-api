@@ -1,4 +1,4 @@
-package com.tsundokuplus.domain.model
+package com.tsundokuplus.domain.model.user
 
 data class User(
     val id: Int? = null,
