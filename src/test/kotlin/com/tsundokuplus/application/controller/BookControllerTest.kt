@@ -5,10 +5,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.tsundokuplus.application.service.BookService
 import com.tsundokuplus.application.service.security.LoginUser
-import com.tsundokuplus.domain.model.Book
-import com.tsundokuplus.domain.model.Note
-import com.tsundokuplus.domain.model.RoleType
-import com.tsundokuplus.domain.model.User
+import com.tsundokuplus.domain.model.*
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -54,8 +51,8 @@ class BookControllerTest {
         )
         user = User(
             1,
-            "test@example.com",
-            "password",
+            Email("test@example.com"),
+            Password.factory("password"),
             "Test User",
             RoleType.USER
         )
@@ -65,7 +62,7 @@ class BookControllerTest {
     @WithCustomMockUser
     fun `Get a list of books`() {
         val books = listOf(book)
-        whenever(bookService.getList(user.id)).thenReturn(books)
+        whenever(bookService.getList(user.id!!)).thenReturn(books)
 
         val result = mockMvc.perform(get("/book/list"))
             .andExpect(status().isOk)
@@ -78,7 +75,7 @@ class BookControllerTest {
     @WithCustomMockUser
     fun `Get a book`() {
         val bookId = book.id!!
-        whenever(bookService.getDetail(bookId, user.id)).thenReturn(book)
+        whenever(bookService.getDetail(bookId, user.id!!)).thenReturn(book)
 
         val result = mockMvc.perform(get("/book/$bookId"))
             .andExpect(status().isOk)
@@ -100,7 +97,7 @@ class BookControllerTest {
             book.smallThumbnail,
             Note.ofNull()
         )
-        doNothing().`when`(bookService).addBook(initialBook, user.id)
+        doNothing().`when`(bookService).addBook(initialBook, user.id!!)
 
         val request = AddBookRequest(book.title, book.author, book.publisher, book.thumbnail, book.smallThumbnail)
         mockMvc.perform(post("/book")
@@ -108,7 +105,7 @@ class BookControllerTest {
             .contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(status().isCreated)
 
-        verify(bookService).addBook(initialBook, user.id)
+        verify(bookService).addBook(initialBook, user.id!!)
     }
 
     @Test
@@ -116,7 +113,7 @@ class BookControllerTest {
     fun `Update a book`() {
         val bookId = book.id!!
         val updatedContents = "Test for update."
-        doNothing().`when`(bookService).updateBook(bookId, Note(updatedContents), user.id)
+        doNothing().`when`(bookService).updateBook(bookId, Note(updatedContents), user.id!!)
 
         val request = UpdateBookRequest(updatedContents)
         mockMvc.perform(put("/book/$bookId")
@@ -124,19 +121,19 @@ class BookControllerTest {
             .contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(status().isNoContent)
 
-        verify(bookService).updateBook(bookId, Note(updatedContents), user.id)
+        verify(bookService).updateBook(bookId, Note(updatedContents), user.id!!)
     }
 
     @Test
     @WithCustomMockUser
     fun `Delete a book`() {
         val bookId = book.id!!
-        doNothing().`when`(bookService).deleteBook(bookId, user.id)
+        doNothing().`when`(bookService).deleteBook(bookId, user.id!!)
 
         mockMvc.perform(delete("/book/$bookId"))
             .andExpect(status().isNoContent)
 
-        verify(bookService).deleteBook(bookId, user.id)
+        verify(bookService).deleteBook(bookId, user.id!!)
     }
 
     private fun expected(response: Any): String? {

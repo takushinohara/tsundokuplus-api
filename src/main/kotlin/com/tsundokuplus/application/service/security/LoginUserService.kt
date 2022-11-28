@@ -26,7 +26,7 @@ data class LoginUser(
     val roleType: RoleType
 ) : UserDetails {
 
-    constructor(user: User) : this(user.id, user.email, user.password, user.roleType)
+    constructor(user: User) : this(user.id!!, user.email.value, user.password.value, user.roleType)
 
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
         return AuthorityUtils.createAuthorityList(this.roleType.toString())

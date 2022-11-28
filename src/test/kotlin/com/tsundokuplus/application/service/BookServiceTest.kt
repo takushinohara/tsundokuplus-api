@@ -1,9 +1,6 @@
 package com.tsundokuplus.application.service
 
-import com.tsundokuplus.domain.model.Book
-import com.tsundokuplus.domain.model.Note
-import com.tsundokuplus.domain.model.RoleType
-import com.tsundokuplus.domain.model.User
+import com.tsundokuplus.domain.model.*
 import com.tsundokuplus.domain.repository.BookRepository
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.BeforeEach
@@ -29,8 +26,8 @@ class BookServiceTest {
         )
         user = User(
             1,
-            "test@example.com",
-            "password",
+            Email("test@example.com"),
+            Password.factory("password"),
             "Test User",
             RoleType.USER
         )
@@ -40,9 +37,9 @@ class BookServiceTest {
     fun `Get a list of books`() {
         val expected = listOf(book)
 
-        whenever(bookRepository.findAll(user.id)).thenReturn(expected)
+        whenever(bookRepository.findAll(user.id!!)).thenReturn(expected)
 
-        val result = bookService.getList(user.id)
+        val result = bookService.getList(user.id!!)
         Assertions.assertThat(result).isEqualTo(expected)
     }
 
@@ -51,43 +48,43 @@ class BookServiceTest {
         val expected = book
 
         val bookId = book.id!!
-        whenever(bookRepository.findOne(bookId, user.id)).thenReturn(book)
+        whenever(bookRepository.findOne(bookId, user.id!!)).thenReturn(book)
 
-        val result = bookService.getDetail(bookId, user.id)
+        val result = bookService.getDetail(bookId, user.id!!)
         Assertions.assertThat(result).isEqualTo(expected)
 
-        verify(bookRepository).findOne(bookId, user.id)
+        verify(bookRepository).findOne(bookId, user.id!!)
     }
 
     @Test
     fun `Get a book - Throw exception when the book can't find`() {
         val bookId = book.id!!
-        whenever(bookRepository.findOne(bookId, user.id)).thenReturn(null)
+        whenever(bookRepository.findOne(bookId, user.id!!)).thenReturn(null)
 
         Assertions.assertThatIllegalArgumentException().isThrownBy {
-            bookService.getDetail(bookId, user.id)
+            bookService.getDetail(bookId, user.id!!)
         }.withMessage("This book is not found")
     }
 
     @Test
     fun `Add a book`() {
-        doNothing().`when`(bookRepository).create(book, user.id)
+        doNothing().`when`(bookRepository).create(book, user.id!!)
 
-        bookService.addBook(book, user.id)
+        bookService.addBook(book, user.id!!)
 
-        verify(bookRepository).create(book, user.id)
+        verify(bookRepository).create(book, user.id!!)
     }
 
     @Test
     fun `Update a book`() {
         val bookId = book.id!!
-        whenever(bookRepository.findOne(bookId, user.id)).thenReturn(book)
+        whenever(bookRepository.findOne(bookId, user.id!!)).thenReturn(book)
         doNothing().`when`(bookRepository).update(book)
 
         val updatedContents = "Test for update."
-        bookService.updateBook(bookId, Note(updatedContents), user.id)
+        bookService.updateBook(bookId, Note(updatedContents), user.id!!)
 
-        verify(bookRepository).findOne(bookId, user.id)
+        verify(bookRepository).findOne(bookId, user.id!!)
         verify(bookRepository).update(Book(
             bookId,
             "Test book",
@@ -102,10 +99,10 @@ class BookServiceTest {
     @Test
     fun `Update a book - Throw exception when the book can't find`() {
         val bookId = book.id!!
-        whenever(bookRepository.findOne(bookId, user.id)).thenReturn(null)
+        whenever(bookRepository.findOne(bookId, user.id!!)).thenReturn(null)
 
         Assertions.assertThatIllegalArgumentException().isThrownBy {
-            bookService.updateBook(bookId, book.note, user.id)
+            bookService.updateBook(bookId, book.note, user.id!!)
         }.withMessage("This book is not found")
 
         verify(bookRepository, times(0)).update(any())
@@ -114,12 +111,12 @@ class BookServiceTest {
     @Test
     fun `Delete a book`() {
         val bookId = book.id!!
-        whenever(bookRepository.findOne(bookId, user.id)).thenReturn(book)
+        whenever(bookRepository.findOne(bookId, user.id!!)).thenReturn(book)
         doNothing().`when`(bookRepository).delete(bookId)
 
-        bookService.deleteBook(bookId, user.id)
+        bookService.deleteBook(bookId, user.id!!)
 
-        verify(bookRepository).findOne(bookId, user.id)
+        verify(bookRepository).findOne(bookId, user.id!!)
         verify(bookRepository).delete(bookId)
     }
 }

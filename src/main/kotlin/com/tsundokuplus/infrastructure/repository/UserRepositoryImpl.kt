@@ -1,12 +1,16 @@
 package com.tsundokuplus.infrastructure.repository
 
+import com.tsundokuplus.domain.model.Email
+import com.tsundokuplus.domain.model.Password
 import com.tsundokuplus.domain.model.RoleType
 import com.tsundokuplus.domain.model.User
 import com.tsundokuplus.domain.repository.UserRepository
 import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.javatime.datetime
 import org.jetbrains.exposed.sql.select
 import org.springframework.stereotype.Repository
+import java.time.LocalDateTime
 
 @Repository
 class UserRepositoryImpl : UserRepository {
@@ -16,11 +20,22 @@ class UserRepositoryImpl : UserRepository {
         return result.let {
             User(
                 it[UserTable.id],
-                it[UserTable.email],
-                it[UserTable.password],
+                Email(it[UserTable.email]) ,
+                Password(it[UserTable.password]),
                 it[UserTable.name],
                 it[UserTable.roleType]
             )
+        }
+    }
+
+    override fun create(user: User) {
+        UserTable.insert {
+            it[email] = user.email.value
+            it[password] = user.password.value
+            it[name] = user.name
+            it[roleType] = user.roleType
+            it[created_at] = LocalDateTime.now()
+            it[updated_at] = LocalDateTime.now()
         }
     }
 

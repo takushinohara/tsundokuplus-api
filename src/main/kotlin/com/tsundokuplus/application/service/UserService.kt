@@ -13,4 +13,9 @@ class UserService(
     fun getUser(email: String): User? {
         return userRepository.findOne(email)
     }
+
+    @Transactional
+    fun createUser(user: User) {
+        return userRepository.create(user)
+    }
 }

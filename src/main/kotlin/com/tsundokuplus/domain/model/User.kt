@@ -1,9 +1,9 @@
 package com.tsundokuplus.domain.model
 
 data class User(
-    val id: Int,
-    val email: String,
-    val password: String,
+    val id: Int? = null,
+    val email: Email,
+    val password: Password,
     val name: String,
-    val roleType: RoleType
+    val roleType: RoleType = RoleType.USER
 )
