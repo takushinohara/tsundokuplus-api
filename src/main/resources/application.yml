@@ -6,3 +6,6 @@ spring:
     username: ${env.DB_USER}
     password: ${env.DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
+app:
+  cors:
+    allowed-origin: ${env.APP_CORS_ALLOWED_ORIGIN}

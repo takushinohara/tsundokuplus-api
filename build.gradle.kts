@@ -17,6 +17,8 @@ repositories {
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web:2.7.5")
+    implementation("org.springframework.boot:spring-boot-starter-security:2.7.5")
+    implementation("org.springframework.shell:spring-shell-starter:2.1.3")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.3")
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.6.21")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.21")
@@ -30,6 +32,7 @@ dependencies {
     implementation("org.flywaydb:flyway-core:8.5.13")
     implementation("org.flywaydb:flyway-mysql:8.5.13")
     testImplementation("org.springframework.boot:spring-boot-starter-test:2.7.5")
+    testImplementation("org.springframework.security:spring-security-test:5.7.4")
     testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
 }
 
@@ -42,4 +45,8 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+tasks.withType<JavaExec> {
+    standardInput = System.`in`
 }

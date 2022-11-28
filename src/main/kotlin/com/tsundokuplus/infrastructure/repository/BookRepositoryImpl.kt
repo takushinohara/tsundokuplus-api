@@ -1,7 +1,7 @@
 package com.tsundokuplus.infrastructure.repository
 
-import com.tsundokuplus.domain.model.Book
-import com.tsundokuplus.domain.model.Note
+import com.tsundokuplus.domain.model.book.Book
+import com.tsundokuplus.domain.model.book.Note
 import com.tsundokuplus.domain.repository.BookRepository
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
@@ -11,8 +11,8 @@ import java.time.LocalDateTime
 
 @Repository
 class BookRepositoryImpl : BookRepository {
-    override fun findAll(): List<Book> {
-        val results = BookTable.select { BookTable.user_id eq 1 }
+    override fun findAll(userId: Int): List<Book> {
+        val results = BookTable.select { BookTable.user_id eq userId }
 
         return results.map {
             Book(
@@ -27,10 +27,10 @@ class BookRepositoryImpl : BookRepository {
         }
     }
 
-    override fun findOne(bookId: Int): Book? {
+    override fun findOne(bookId: Int, userId: Int): Book? {
         val result = BookTable
             .join(NoteTable, JoinType.LEFT, additionalConstraint = { BookTable.id eq NoteTable.book_id })
-            .select { BookTable.id eq bookId }
+            .select { BookTable.id eq bookId and (BookTable.user_id eq userId) }
             .single()
 
         return result.let {
@@ -49,10 +49,10 @@ class BookRepositoryImpl : BookRepository {
         }
     }
 
-    override fun create(book: Book) {
+    override fun create(book: Book, userId: Int) {
         val id = BookTable.insert {
             it[title] = book.title
-            it[user_id] = 1
+            it[user_id] = userId
             it[author] = book.author!!
             it[publisher] = book.publisher!!
             it[thumbnail] = book.thumbnail!!

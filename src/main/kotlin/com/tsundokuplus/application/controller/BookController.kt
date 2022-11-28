@@ -1,9 +1,11 @@
 package com.tsundokuplus.application.controller
 
 import com.tsundokuplus.application.service.BookService
-import com.tsundokuplus.domain.model.Book
-import com.tsundokuplus.domain.model.Note
+import com.tsundokuplus.application.service.security.LoginUser
+import com.tsundokuplus.domain.model.book.Book
+import com.tsundokuplus.domain.model.book.Note
 import org.springframework.http.HttpStatus
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -23,13 +25,13 @@ class BookController (
 ) {
     @GetMapping("/list")
     fun getBookList(): GetBookListResponse {
-        val books = bookService.getList()
+        val books = bookService.getList(loginUser().id)
         return GetBookListResponse(books)
     }
 
     @GetMapping("/{book_id}")
     fun getBook(@PathVariable("book_id") bookId: Int): GetBookResponse {
-        val book = bookService.getDetail(bookId)
+        val book = bookService.getDetail(bookId, loginUser().id)
         return GetBookResponse(
             book.id!!,
             book.title,
@@ -52,20 +54,24 @@ class BookController (
             request.smallThumbnail,
             Note.ofNull()
         )
-        bookService.addBook(book)
+        bookService.addBook(book, loginUser().id)
     }
 
     @PutMapping("/{book_id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun updateBook(@PathVariable("book_id") bookId: Int, @RequestBody request: UpdateBookRequest) {
         val note = Note(request.note)
-        bookService.updateBook(bookId, note)
+        bookService.updateBook(bookId, note, loginUser().id)
     }
 
     @DeleteMapping("/{book_id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteBook(@PathVariable("book_id") bookId: Int) {
-        bookService.deleteBook(bookId)
+        bookService.deleteBook(bookId, loginUser().id)
+    }
+
+    private fun loginUser(): LoginUser {
+        return SecurityContextHolder.getContext().authentication.principal as LoginUser
     }
 }
 

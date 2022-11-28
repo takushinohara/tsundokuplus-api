@@ -1,6 +1,9 @@
 CREATE TABLE user(
     id int NOT NULL AUTO_INCREMENT,
+    email varchar(255) UNIQUE NOT NULL,
+    password varchar(128) NOT NULL,
     name varchar(255) NOT NULL,
+    role_type enum('ADMIN', 'USER'),
     created_at datetime,
     updated_at datetime,
     PRIMARY KEY (id)
