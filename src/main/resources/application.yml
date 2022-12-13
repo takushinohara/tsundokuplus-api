@@ -9,3 +9,5 @@ spring:
 app:
   cors:
     allowed-origin: ${env.APP_CORS_ALLOWED_ORIGIN}
+  cookie:
+    same-site: ${env.APP_COOKIE_SAME_SITE}
