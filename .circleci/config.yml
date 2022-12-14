@@ -1,0 +1,49 @@
+version: 2.1
+
+orbs:
+  aws-ecr: circleci/aws-ecr@8.1.3
+
+jobs:
+  build-and-push:
+    docker:
+      - image: cimg/openjdk:17.0
+    working_directory: ~/repo
+    environment:
+      JVM_OPTS: -Xmx512m
+      TERM: dumb
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "build.gradle.kts" }}
+            - v1-dependencies-
+      - run: gradle dependencies
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: v1-dependencies-{{ checksum "build.gradle.kts" }}
+      - run: gradle bootJar
+      - aws-ecr/build-and-push-image:
+          repo: $AWS_ECR_REPOSITORY_NAME
+          dockerfile: ./Dockerfile
+          tag: latest,${CIRCLE_SHA1}
+
+workflows:
+  deploy-stg:
+    jobs:
+      - build-and-push:
+          context: tsundokuplus-stg
+          filters:
+            branches:
+              only: main
+  deploy-prd:
+    jobs:
+      - build-and-push:
+          context: tsundokuplus-prd
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v\d+\.\d+\.\d+$/
