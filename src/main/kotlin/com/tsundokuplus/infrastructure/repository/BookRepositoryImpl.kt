@@ -54,10 +54,10 @@ class BookRepositoryImpl : BookRepository {
         val id = BookTable.insert {
             it[title] = book.title
             it[user_id] = userId
-            it[author] = book.author!!
-            it[publisher] = book.publisher!!
-            it[thumbnail] = book.thumbnail!!
-            it[small_thumbnail] = book.smallThumbnail!!
+            it[author] = book.author
+            it[publisher] = book.publisher
+            it[thumbnail] = book.thumbnail
+            it[small_thumbnail] = book.smallThumbnail
             it[created_at] = LocalDateTime.now(ZoneId.of("UTC"))
             it[updated_at] = LocalDateTime.now(ZoneId.of("UTC"))
         } get BookTable.id
@@ -72,7 +72,7 @@ class BookRepositoryImpl : BookRepository {
     override fun update(book: Book) {
         val bookId: Int = book.id!!
         NoteTable.update ({ NoteTable.book_id eq bookId }) {
-            it[contents] = book.note.contents!!
+            it[contents] = book.note.contents
             it[updated_at] = LocalDateTime.now(ZoneId.of("UTC"))
         }
     }
@@ -86,10 +86,10 @@ class BookRepositoryImpl : BookRepository {
         val id = integer("id").autoIncrement()
         val user_id = integer("user_id")
         val title = varchar("title", 255)
-        val author = varchar("author", 255)
-        val publisher = varchar("publisher", 255)
-        val thumbnail = varchar("thumbnail", 255)
-        val small_thumbnail = varchar("small_thumbnail", 255)
+        val author = varchar("author", 255).nullable()
+        val publisher = varchar("publisher", 255).nullable()
+        val thumbnail = varchar("thumbnail", 255).nullable()
+        val small_thumbnail = varchar("small_thumbnail", 255).nullable()
         val created_at = datetime("created_at")
         val updated_at = datetime("updated_at")
     }
@@ -97,7 +97,7 @@ class BookRepositoryImpl : BookRepository {
     object NoteTable : Table("note") {
         val id = integer("id").autoIncrement()
         val book_id = integer("book_id")
-        val contents = varchar("contents", 2048)
+        val contents = varchar("contents", 2048).nullable()
         val created_at = datetime("created_at")
         val updated_at = datetime("updated_at")
     }
