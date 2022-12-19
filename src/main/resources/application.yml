@@ -2,6 +2,8 @@ server:
   port: ${env.APP_PORT}
   servlet:
     context-path: /api
+    session:
+      timeout: ${env.APP_SESSION_TIMEOUT}
 spring:
   datasource:
     url: jdbc:mysql://${env.DB_HOST}:${env.DB_PORT}/${env.DB_NAME}
