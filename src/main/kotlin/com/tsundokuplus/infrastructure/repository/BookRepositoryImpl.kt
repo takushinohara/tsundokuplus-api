@@ -8,6 +8,7 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.javatime.datetime
 import org.springframework.stereotype.Repository
 import java.time.LocalDateTime
+import java.time.ZoneId
 
 @Repository
 class BookRepositoryImpl : BookRepository {
@@ -57,14 +58,14 @@ class BookRepositoryImpl : BookRepository {
             it[publisher] = book.publisher!!
             it[thumbnail] = book.thumbnail!!
             it[small_thumbnail] = book.smallThumbnail!!
-            it[created_at] = LocalDateTime.now()
-            it[updated_at] = LocalDateTime.now()
+            it[created_at] = LocalDateTime.now(ZoneId.of("UTC"))
+            it[updated_at] = LocalDateTime.now(ZoneId.of("UTC"))
         } get BookTable.id
 
         NoteTable.insert {
             it[book_id] = id
-            it[created_at] = LocalDateTime.now()
-            it[updated_at] = LocalDateTime.now()
+            it[created_at] = LocalDateTime.now(ZoneId.of("UTC"))
+            it[updated_at] = LocalDateTime.now(ZoneId.of("UTC"))
         }
     }
 
@@ -72,7 +73,7 @@ class BookRepositoryImpl : BookRepository {
         val bookId: Int = book.id!!
         NoteTable.update ({ NoteTable.book_id eq bookId }) {
             it[contents] = book.note.contents!!
-            it[updated_at] = LocalDateTime.now()
+            it[updated_at] = LocalDateTime.now(ZoneId.of("UTC"))
         }
     }
 

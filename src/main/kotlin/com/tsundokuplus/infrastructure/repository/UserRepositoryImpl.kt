@@ -11,6 +11,7 @@ import org.jetbrains.exposed.sql.javatime.datetime
 import org.jetbrains.exposed.sql.select
 import org.springframework.stereotype.Repository
 import java.time.LocalDateTime
+import java.time.ZoneId
 
 @Repository
 class UserRepositoryImpl : UserRepository {
@@ -34,8 +35,8 @@ class UserRepositoryImpl : UserRepository {
             it[password] = user.password.value
             it[name] = user.name
             it[roleType] = user.roleType
-            it[created_at] = LocalDateTime.now()
-            it[updated_at] = LocalDateTime.now()
+            it[created_at] = LocalDateTime.now(ZoneId.of("UTC"))
+            it[updated_at] = LocalDateTime.now(ZoneId.of("UTC"))
         }
     }
 

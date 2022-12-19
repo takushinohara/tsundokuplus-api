@@ -13,7 +13,6 @@ services:
       MYSQL_DATABASE: ${DB_NAME}
       MYSQL_USER: ${DB_USER}
       MYSQL_PASSWORD: ${DB_PASSWORD}
-      TZ: ${DB_TIME_ZONE}
     command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci
 
 volumes:
