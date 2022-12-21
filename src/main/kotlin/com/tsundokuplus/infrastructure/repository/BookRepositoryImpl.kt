@@ -13,7 +13,9 @@ import java.time.ZoneId
 @Repository
 class BookRepositoryImpl : BookRepository {
     override fun findAll(userId: Int): List<Book> {
-        val results = BookTable.select { BookTable.user_id eq userId }
+        val results = BookTable.join(NoteTable, JoinType.LEFT, additionalConstraint = { BookTable.id eq NoteTable.book_id })
+            .select { BookTable.user_id eq userId }
+            .orderBy(NoteTable.updated_at to SortOrder.DESC)
 
         return results.map {
             Book(
