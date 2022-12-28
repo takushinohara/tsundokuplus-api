@@ -1,8 +1,11 @@
 package com.tsundokuplus.application.service
 
+import com.tsundokuplus.application.exception.BookNotFoundException
 import com.tsundokuplus.domain.model.book.Book
 import com.tsundokuplus.domain.model.book.Note
 import com.tsundokuplus.domain.repository.BookRepository
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -10,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional
 class BookService(
     private val bookRepository: BookRepository
 ) {
+    private val logger: Logger = LoggerFactory.getLogger(BookService::class.java)
+
     @Transactional
     fun getList(userId: Int): List<Book> {
         return bookRepository.findAll(userId)
@@ -17,7 +22,12 @@ class BookService(
 
     @Transactional
     fun getDetail(bookId: Int, userId: Int): Book {
-        return bookRepository.findOne(bookId, userId) ?: throw IllegalArgumentException("This book is not found")
+        try {
+            return bookRepository.findOne(bookId, userId)
+        } catch (e: NoSuchElementException) {
+            logger.warn(e.stackTraceToString())
+            throw BookNotFoundException("This book is not found")
+        }
     }
 
     @Transactional
@@ -27,14 +37,24 @@ class BookService(
 
     @Transactional
     fun updateBook(bookId: Int, note: Note, userId: Int) {
-        val book = bookRepository.findOne(bookId, userId) ?: throw IllegalArgumentException("This book is not found")
-        book.note = note
-        bookRepository.update(book)
+        try {
+            val book = bookRepository.findOne(bookId, userId)
+            book.note = note
+            bookRepository.update(book)
+        } catch (e: NoSuchElementException) {
+            logger.warn(e.stackTraceToString())
+            throw BookNotFoundException("This book is not found")
+        }
     }
 
     @Transactional
     fun deleteBook(bookId: Int, userId: Int) {
-        bookRepository.findOne(bookId, userId) ?: throw IllegalArgumentException("This book is not found")
-        bookRepository.delete(bookId)
+        try {
+            bookRepository.findOne(bookId, userId)
+            bookRepository.delete(bookId)
+        } catch (e: NoSuchElementException) {
+            logger.warn(e.stackTraceToString())
+            throw BookNotFoundException("This book is not found")
+        }
     }
 }
