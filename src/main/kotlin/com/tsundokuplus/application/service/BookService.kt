@@ -4,6 +4,8 @@ import com.tsundokuplus.application.exception.BookNotFoundException
 import com.tsundokuplus.domain.model.book.Book
 import com.tsundokuplus.domain.model.book.Note
 import com.tsundokuplus.domain.repository.BookRepository
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -11,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional
 class BookService(
     private val bookRepository: BookRepository
 ) {
+    private val logger: Logger = LoggerFactory.getLogger(BookService::class.java)
+
     @Transactional
     fun getList(userId: Int): List<Book> {
         return bookRepository.findAll(userId)
@@ -21,7 +25,7 @@ class BookService(
         try {
             return bookRepository.findOne(bookId, userId)
         } catch (e: NoSuchElementException) {
-            println(e.stackTraceToString())
+            logger.warn(e.stackTraceToString())
             throw BookNotFoundException("This book is not found")
         }
     }
@@ -38,7 +42,7 @@ class BookService(
             book.note = note
             bookRepository.update(book)
         } catch (e: NoSuchElementException) {
-            println(e.stackTraceToString())
+            logger.warn(e.stackTraceToString())
             throw BookNotFoundException("This book is not found")
         }
     }
@@ -49,7 +53,7 @@ class BookService(
             bookRepository.findOne(bookId, userId)
             bookRepository.delete(bookId)
         } catch (e: NoSuchElementException) {
-            println(e.stackTraceToString())
+            logger.warn(e.stackTraceToString())
             throw BookNotFoundException("This book is not found")
         }
     }

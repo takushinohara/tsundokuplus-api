@@ -12,7 +12,7 @@ class ExceptionControllerAdvice : ResponseEntityExceptionHandler() {
     @ExceptionHandler(BookNotFoundException::class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     fun bookNotFoundExceptionHandler(e: BookNotFoundException): ErrorResponse {
-        println(e.stackTraceToString())
+        logger.warn(e.stackTraceToString())
         return ErrorResponse(e.message)
     }
 }
