@@ -1,5 +1,6 @@
 package com.tsundokuplus.application.service
 
+import com.tsundokuplus.application.exception.BookNotFoundException
 import com.tsundokuplus.domain.model.book.Book
 import com.tsundokuplus.domain.model.book.Note
 import com.tsundokuplus.domain.model.user.Email
@@ -64,9 +65,9 @@ class BookServiceTest {
     @Test
     fun `Get a book - Throw exception when the book can't find`() {
         val bookId = book.id!!
-        whenever(bookRepository.findOne(bookId, user.id!!)).thenReturn(null)
+        whenever(bookRepository.findOne(bookId, user.id!!)).thenThrow(NoSuchElementException())
 
-        Assertions.assertThatIllegalArgumentException().isThrownBy {
+        Assertions.assertThatExceptionOfType(BookNotFoundException::class.java).isThrownBy {
             bookService.getDetail(bookId, user.id!!)
         }.withMessage("This book is not found")
     }
@@ -106,9 +107,9 @@ class BookServiceTest {
     @Test
     fun `Update a book - Throw exception when the book can't find`() {
         val bookId = book.id!!
-        whenever(bookRepository.findOne(bookId, user.id!!)).thenReturn(null)
+        whenever(bookRepository.findOne(bookId, user.id!!)).thenThrow(NoSuchElementException())
 
-        Assertions.assertThatIllegalArgumentException().isThrownBy {
+        Assertions.assertThatExceptionOfType(BookNotFoundException::class.java).isThrownBy {
             bookService.updateBook(bookId, book.note, user.id!!)
         }.withMessage("This book is not found")
 
@@ -125,5 +126,17 @@ class BookServiceTest {
 
         verify(bookRepository).findOne(bookId, user.id!!)
         verify(bookRepository).delete(bookId)
+    }
+
+    @Test
+    fun `Delete a book - Throw exception when the book can't find`() {
+        val bookId = book.id!!
+        whenever(bookRepository.findOne(bookId, user.id!!)).thenThrow(NoSuchElementException())
+
+        Assertions.assertThatExceptionOfType(BookNotFoundException::class.java).isThrownBy {
+            bookService.deleteBook(bookId, user.id!!)
+        }.withMessage("This book is not found")
+
+        verify(bookRepository, times(0)).delete(any())
     }
 }

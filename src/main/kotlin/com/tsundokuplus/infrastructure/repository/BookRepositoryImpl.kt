@@ -30,7 +30,7 @@ class BookRepositoryImpl : BookRepository {
         }
     }
 
-    override fun findOne(bookId: Int, userId: Int): Book? {
+    override fun findOne(bookId: Int, userId: Int): Book {
         val result = BookTable
             .join(NoteTable, JoinType.LEFT, additionalConstraint = { BookTable.id eq NoteTable.book_id })
             .select { BookTable.id eq bookId and (BookTable.user_id eq userId) }
