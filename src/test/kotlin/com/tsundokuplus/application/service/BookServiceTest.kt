@@ -45,7 +45,7 @@ class BookServiceTest {
 
         whenever(bookRepository.findAll(user.id!!)).thenReturn(expected)
 
-        val result = bookService.getList(user.id!!)
+        val result = bookService.getBooks(user.id!!)
         Assertions.assertThat(result).isEqualTo(expected)
     }
 
@@ -56,7 +56,7 @@ class BookServiceTest {
         val bookId = book.id!!
         whenever(bookRepository.findOne(bookId, user.id!!)).thenReturn(book)
 
-        val result = bookService.getDetail(bookId, user.id!!)
+        val result = bookService.getBook(bookId, user.id!!)
         Assertions.assertThat(result).isEqualTo(expected)
 
         verify(bookRepository).findOne(bookId, user.id!!)
@@ -68,7 +68,7 @@ class BookServiceTest {
         whenever(bookRepository.findOne(bookId, user.id!!)).thenThrow(NoSuchElementException())
 
         Assertions.assertThatExceptionOfType(BookNotFoundException::class.java).isThrownBy {
-            bookService.getDetail(bookId, user.id!!)
+            bookService.getBook(bookId, user.id!!)
         }.withMessage("This book is not found")
     }
 

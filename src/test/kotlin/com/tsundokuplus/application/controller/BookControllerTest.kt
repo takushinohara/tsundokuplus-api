@@ -67,22 +67,22 @@ class BookControllerTest {
     @WithCustomMockUser
     fun `Get a list of books`() {
         val books = listOf(book)
-        whenever(bookService.getList(user.id!!)).thenReturn(books)
+        whenever(bookService.getBooks(user.id!!)).thenReturn(books)
 
-        val result = mockMvc.perform(get("/book/list"))
+        val result = mockMvc.perform(get("/books"))
             .andExpect(status().isOk)
             .andReturn().response.getContentAsString(StandardCharsets.UTF_8)
 
-        Assertions.assertThat(result).isEqualTo(expected(GetBookListResponse(books)))
+        Assertions.assertThat(result).isEqualTo(expected(GetBooksResponse(books)))
     }
 
     @Test
     @WithCustomMockUser
     fun `Get a book`() {
         val bookId = book.id!!
-        whenever(bookService.getDetail(bookId, user.id!!)).thenReturn(book)
+        whenever(bookService.getBook(bookId, user.id!!)).thenReturn(book)
 
-        val result = mockMvc.perform(get("/book/$bookId"))
+        val result = mockMvc.perform(get("/books/$bookId"))
             .andExpect(status().isOk)
             .andReturn().response.getContentAsString(StandardCharsets.UTF_8)
 
@@ -105,7 +105,7 @@ class BookControllerTest {
         doNothing().`when`(bookService).addBook(initialBook, user.id!!)
 
         val request = AddBookRequest(book.title, book.author, book.publisher, book.thumbnail, book.smallThumbnail)
-        mockMvc.perform(post("/book")
+        mockMvc.perform(post("/books")
             .content(ObjectMapper().writeValueAsString(request))
             .contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(status().isCreated)
@@ -121,7 +121,7 @@ class BookControllerTest {
         doNothing().`when`(bookService).updateBook(bookId, Note(updatedContents), user.id!!)
 
         val request = UpdateBookRequest(updatedContents)
-        mockMvc.perform(put("/book/$bookId")
+        mockMvc.perform(put("/books/$bookId")
             .content(ObjectMapper().writeValueAsString(request))
             .contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(status().isNoContent)
@@ -135,7 +135,7 @@ class BookControllerTest {
         val bookId = book.id!!
         doNothing().`when`(bookService).deleteBook(bookId, user.id!!)
 
-        mockMvc.perform(delete("/book/$bookId"))
+        mockMvc.perform(delete("/books/$bookId"))
             .andExpect(status().isNoContent)
 
         verify(bookService).deleteBook(bookId, user.id!!)

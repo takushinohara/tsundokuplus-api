@@ -13,47 +13,47 @@ import java.time.ZoneId
 @Repository
 class BookRepositoryImpl : BookRepository {
     override fun findAll(userId: Int): List<Book> {
-        val results = BookTable.join(NoteTable, JoinType.LEFT, additionalConstraint = { BookTable.id eq NoteTable.book_id })
-            .select { BookTable.user_id eq userId }
-            .orderBy(NoteTable.updated_at to SortOrder.DESC)
+        val results = BooksTable.join(NotesTable, JoinType.LEFT, additionalConstraint = { BooksTable.id eq NotesTable.book_id })
+            .select { BooksTable.user_id eq userId }
+            .orderBy(NotesTable.updated_at to SortOrder.DESC)
 
         return results.map {
             Book(
-                it[BookTable.id],
-                it[BookTable.title],
-                it[BookTable.author],
-                it[BookTable.publisher],
-                it[BookTable.thumbnail],
-                it[BookTable.small_thumbnail],
+                it[BooksTable.id],
+                it[BooksTable.title],
+                it[BooksTable.author],
+                it[BooksTable.publisher],
+                it[BooksTable.thumbnail],
+                it[BooksTable.small_thumbnail],
                 Note.ofNull()
             )
         }
     }
 
     override fun findOne(bookId: Int, userId: Int): Book {
-        val result = BookTable
-            .join(NoteTable, JoinType.LEFT, additionalConstraint = { BookTable.id eq NoteTable.book_id })
-            .select { BookTable.id eq bookId and (BookTable.user_id eq userId) }
+        val result = BooksTable
+            .join(NotesTable, JoinType.LEFT, additionalConstraint = { BooksTable.id eq NotesTable.book_id })
+            .select { BooksTable.id eq bookId and (BooksTable.user_id eq userId) }
             .single()
 
         return result.let {
             Book(
-                it[BookTable.id],
-                it[BookTable.title],
-                it[BookTable.author],
-                it[BookTable.publisher],
-                it[BookTable.thumbnail],
-                it[BookTable.small_thumbnail],
+                it[BooksTable.id],
+                it[BooksTable.title],
+                it[BooksTable.author],
+                it[BooksTable.publisher],
+                it[BooksTable.thumbnail],
+                it[BooksTable.small_thumbnail],
                 Note(
-                    it[NoteTable.contents],
-                    it[NoteTable.updated_at]
+                    it[NotesTable.contents],
+                    it[NotesTable.updated_at]
                 )
             )
         }
     }
 
     override fun create(book: Book, userId: Int) {
-        val id = BookTable.insert {
+        val id = BooksTable.insert {
             it[title] = book.title
             it[user_id] = userId
             it[author] = book.author
@@ -62,9 +62,9 @@ class BookRepositoryImpl : BookRepository {
             it[small_thumbnail] = book.smallThumbnail
             it[created_at] = LocalDateTime.now(ZoneId.of("UTC"))
             it[updated_at] = LocalDateTime.now(ZoneId.of("UTC"))
-        } get BookTable.id
+        } get BooksTable.id
 
-        NoteTable.insert {
+        NotesTable.insert {
             it[book_id] = id
             it[created_at] = LocalDateTime.now(ZoneId.of("UTC"))
             it[updated_at] = LocalDateTime.now(ZoneId.of("UTC"))
@@ -73,18 +73,18 @@ class BookRepositoryImpl : BookRepository {
 
     override fun update(book: Book) {
         val bookId: Int = book.id!!
-        NoteTable.update ({ NoteTable.book_id eq bookId }) {
+        NotesTable.update ({ NotesTable.book_id eq bookId }) {
             it[contents] = book.note.contents
             it[updated_at] = LocalDateTime.now(ZoneId.of("UTC"))
         }
     }
 
     override fun delete(bookId: Int) {
-        NoteTable.deleteWhere { book_id eq bookId }
-        BookTable.deleteWhere { id eq bookId }
+        NotesTable.deleteWhere { book_id eq bookId }
+        BooksTable.deleteWhere { id eq bookId }
     }
 
-    object BookTable : Table("book") {
+    object BooksTable : Table("books") {
         val id = integer("id").autoIncrement()
         val user_id = integer("user_id")
         val title = varchar("title", 255)
@@ -96,7 +96,7 @@ class BookRepositoryImpl : BookRepository {
         val updated_at = datetime("updated_at")
     }
 
-    object NoteTable : Table("note") {
+    object NotesTable : Table("notes") {
         val id = integer("id").autoIncrement()
         val book_id = integer("book_id")
         val contents = varchar("contents", 2048).nullable()
