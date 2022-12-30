@@ -16,12 +16,12 @@ class BookService(
     private val logger: Logger = LoggerFactory.getLogger(BookService::class.java)
 
     @Transactional
-    fun getList(userId: Int): List<Book> {
+    fun getBooks(userId: Int): List<Book> {
         return bookRepository.findAll(userId)
     }
 
     @Transactional
-    fun getDetail(bookId: Int, userId: Int): Book {
+    fun getBook(bookId: Int, userId: Int): Book {
         try {
             return bookRepository.findOne(bookId, userId)
         } catch (e: NoSuchElementException) {

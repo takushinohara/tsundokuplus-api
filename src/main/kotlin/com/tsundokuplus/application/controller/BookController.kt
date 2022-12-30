@@ -18,20 +18,20 @@ import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("book")
+@RequestMapping("books")
 @CrossOrigin
 class BookController (
     private val bookService: BookService
 ) {
-    @GetMapping("/list")
-    fun getBookList(): GetBookListResponse {
-        val books = bookService.getList(loginUser().id)
-        return GetBookListResponse(books)
+    @GetMapping
+    fun getBooks(): GetBooksResponse {
+        val books = bookService.getBooks(loginUser().id)
+        return GetBooksResponse(books)
     }
 
     @GetMapping("/{book_id}")
     fun getBook(@PathVariable("book_id") bookId: Int): GetBookResponse {
-        val book = bookService.getDetail(bookId, loginUser().id)
+        val book = bookService.getBook(bookId, loginUser().id)
         return GetBookResponse(
             book.id!!,
             book.title,
@@ -75,8 +75,8 @@ class BookController (
     }
 }
 
-data class GetBookListResponse(
-    val bookList: List<Book>
+data class GetBooksResponse(
+    val books: List<Book>
 )
 
 data class GetBookResponse(

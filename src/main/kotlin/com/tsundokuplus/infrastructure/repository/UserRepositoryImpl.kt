@@ -16,21 +16,21 @@ import java.time.ZoneId
 @Repository
 class UserRepositoryImpl : UserRepository {
     override fun findOne(email: String): User? {
-        val result = UserTable.select { UserTable.email eq email }.single()
+        val result = UsersTable.select { UsersTable.email eq email }.single()
 
         return result.let {
             User(
-                it[UserTable.id],
-                Email(it[UserTable.email]) ,
-                Password(it[UserTable.password]),
-                it[UserTable.name],
-                it[UserTable.roleType]
+                it[UsersTable.id],
+                Email(it[UsersTable.email]) ,
+                Password(it[UsersTable.password]),
+                it[UsersTable.name],
+                it[UsersTable.roleType]
             )
         }
     }
 
     override fun create(user: User) {
-        UserTable.insert {
+        UsersTable.insert {
             it[email] = user.email.value
             it[password] = user.password.value
             it[name] = user.name
@@ -40,7 +40,7 @@ class UserRepositoryImpl : UserRepository {
         }
     }
 
-    object UserTable : Table("user") {
+    object UsersTable : Table("users") {
         val id = integer("id").autoIncrement()
         val email = varchar("email", 255)
         val password = varchar("password", 128)
